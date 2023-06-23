@@ -1,32 +1,51 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import React, { useState } from 'react'
 
-function App() {
-  const [count, setCount] = useState(0)
+import type { ITodo } from './interfaces/index.d.ts'
+import Todos from './components/Todos'
 
-  const handleClick = (): void => {
-    setCount(count => count + 1)
+const mockTodos: ITodo[] = [
+  {
+    id: 1,
+    title: 'Go to the store',
+    done: false,
+  },
+  {
+    id: 2,
+    title: 'Go to the bank',
+    done: true,
+  },
+  {
+    id: 3,
+    title: 'Go to the doctor',
+    done: false,
+  },
+]
+
+const App: React.FC = (): JSX.Element => {
+  const [todos, setTodo] = useState(mockTodos)
+  const handlerRemove = (id: number): void => {
+    const listTodos = todos.filter(todo => todo.id !== id)
+    setTodo(listTodos)
+  }
+
+  const updateCheck = (id: number, checked: boolean): void => {
+    const listTodos = todos.map(todo => {
+      if (todo.id === id) {
+        todo.done = checked
+      }
+      return todo
+    })
+    setTodo(listTodos)
   }
 
   return (
-    <>
-      <div>
-        <a href='https://react.dev'>
-          <img src={reactLogo} className='logo react' alt='React logo' />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className='card'>
-        <button onClick={handleClick}>count is {count}</button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className='read-the-docs'>
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className='todoapp'>
+      <Todos
+        todos={todos}
+        onRemove={handlerRemove}
+        onUpdateCheck={updateCheck}
+      />
+    </div>
   )
 }
 
